@@ -1,17 +1,26 @@
-import mongoose, { Schema, Document, CallbackWithoutResultAndOptionalError } from "mongoose";
-
+import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcrypt";
 
 /**
  * Platform Roles
- * customer  -> buys, browses
- * seller    -> owns exactly one business
- * admin     -> platform control (no business)
  */
 export type UserRole = "customer" | "seller" | "admin";
 
 /**
- * TypeScript Interface
+ * Address Interface
+ */
+export interface IAddress {
+  label: string; // Home, Office, Shop
+  house: string;
+  landmark?: string;
+  pincode: string;
+  district: string;
+  state: string;
+  isDefault: boolean;
+}
+
+/**
+ * User Interface
  */
 export interface IUser extends Document {
   name: string;
@@ -20,11 +29,12 @@ export interface IUser extends Document {
   role: UserRole;
   business: mongoose.Types.ObjectId | null;
   isActive: boolean;
+  addresses: IAddress[];
   comparePassword(candidate: string): Promise<boolean>;
 }
 
 /**
- * Mongoose Schema
+ * User Schema
  */
 const userSchema = new Schema<IUser>(
   {
@@ -47,7 +57,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
       minlength: 6,
-      select: false, // ⛔ never return password from DB
+      select: false,
     },
 
     role: {
@@ -56,24 +66,35 @@ const userSchema = new Schema<IUser>(
       default: "customer",
     },
 
-    // Only sellers will have a business
     business: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Business",
       default: null,
     },
 
-    // Allows admin to disable users
     isActive: {
       type: Boolean,
       default: true,
     },
+
+    // Multiple delivery / pickup addresses
+    addresses: [
+      {
+        label: { type: String, required: true },
+        house: { type: String, required: true },
+        landmark: { type: String },
+        pincode: { type: String, required: true },
+        district: { type: String, required: true },
+        state: { type: String, required: true },
+        isDefault: { type: Boolean, default: false },
+      },
+    ],
   },
   { timestamps: true }
 );
 
 /**
- * Hash password before saving
+ * Password hashing
  */
 userSchema.pre<IUser>("save", async function () {
   if (!this.isModified("password")) return;
@@ -82,9 +103,8 @@ userSchema.pre<IUser>("save", async function () {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-
 /**
- * Compare password for login
+ * Compare password
  */
 userSchema.methods.comparePassword = async function (
   candidate: string
@@ -93,6 +113,6 @@ userSchema.methods.comparePassword = async function (
 };
 
 /**
- * Export model
+ * Export
  */
 export const User = mongoose.model<IUser>("User", userSchema);
