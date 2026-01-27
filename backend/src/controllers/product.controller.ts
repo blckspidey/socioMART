@@ -10,8 +10,10 @@ const createProductSchema = z.object({
   name: z.string().min(2),
   description: z.string().optional(),
   price: z.number().positive(),
-  images: z.array(z.string()).min(1),
-  category: z.string(), // category id
+  images: z.array(z.string().url())
+            .min(1, "At least 1 image required")
+            .max(5, "Maximum 5 images allowed"),
+  category: z.string(),
   stock: z.number().optional(),
 });
 

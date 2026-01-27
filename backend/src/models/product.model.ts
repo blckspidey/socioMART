@@ -36,10 +36,16 @@ const productSchema = new Schema<IProduct>(
       min: 0,
     },
 
-    images: {
-      type: [String], // Cloudinary URLs
-      required: true,
+   images: {
+  type: [String], // Cloudinary URLs
+  required: true,
+  validate: {
+    validator: function (arr: string[]) {
+      return arr.length >= 1 && arr.length <= 5;
     },
+    message: "Product must have between 1 and 5 images",
+  },
+},
 
     category: {
       type: mongoose.Schema.Types.ObjectId,

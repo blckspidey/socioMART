@@ -4,6 +4,7 @@ import authRoutes from "./routes/auth.routes";
 import { errorHandler } from "./middleware/error.middleware";
 import businessRoutes from "./routes/business.routes";
 import productRoutes from "./routes/product.routes";
+import categoryRoutes from "./routes/category.routes";
 
 
 
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/business", businessRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
 app.get("/", (req, res) => {
   res.send("SocioMart API running...");
 });

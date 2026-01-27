@@ -28,14 +28,15 @@ const createBusinessSchema = z.object({
 /**
  * Create Business (Seller only)
  */
-export const createBusiness = async (req: Request & { user?: any }, res: Response) => {
+export const createBusiness = async (
+  req: Request & { user?: any },
+  res: Response
+) => {
   try {
     const data = createBusinessSchema.parse(req.body);
 
-    // seller id from JWT
     const sellerId = req.user.userId;
 
-    // check seller already has business
     const existingBusiness = await Business.findOne({ owner: sellerId });
     if (existingBusiness) {
       return res.status(400).json({
@@ -43,24 +44,24 @@ export const createBusiness = async (req: Request & { user?: any }, res: Respons
       });
     }
 
-    // username must be unique
-    const usernameTaken = await Business.findOne({
-      username: data.username.toLowerCase(),
-    });
+    const username = data.username.toLowerCase();
 
+    const usernameTaken = await Business.findOne({ username });
     if (usernameTaken) {
       return res.status(400).json({
         message: "Business username already taken",
       });
     }
 
+    const shareLink = `https://sociomart.com/${username}`;
+
     const business = await Business.create({
       ...data,
-      username: data.username.toLowerCase(),
+      username,
+      shareLink,
       owner: sellerId,
     });
 
-    // attach business to user
     await User.findByIdAndUpdate(sellerId, {
       business: business._id,
     });
@@ -91,7 +92,7 @@ export const getBusinesses = async (req: Request, res: Response) => {
   if (pincode) filter.pincode = pincode;
 
   const businesses = await Business.find(filter).select(
-    "name username category city area banner"
+    "name username shareLink category city area banner"
   );
 
   res.json(businesses);
