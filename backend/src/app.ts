@@ -6,6 +6,12 @@ import businessRoutes from "./routes/business.routes";
 import productRoutes from "./routes/product.routes";
 import categoryRoutes from "./routes/category.routes";
 import orderRoutes from "./routes/order.routes";
+import productreviewRoutes from "./routes/productreview.routes";
+import serviceRoutes from "./routes/service.routes";
+import bookingRoutes from "./routes/booking.routes";
+import servicereviewRoutes from "./routes/servicereview.routes";
+
+
 
 
 const app = express();
@@ -19,6 +25,10 @@ app.use("/api/business", businessRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/reviews", productreviewRoutes);
+app.use("/api/services", serviceRoutes);
+app.use("/api/bookings", bookingRoutes);
+app.use("/api/reviews",servicereviewRoutes);
 
 
 

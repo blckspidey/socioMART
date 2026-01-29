@@ -91,3 +91,82 @@ if (buyerBusiness && buyerBusiness._id.toString() === data.businessId) {
     res.status(500).json({ message: "Order failed" });
   }
 };
+
+export const getSellerOrders = async (
+  req: Request & { user?: any },
+  res: Response
+) => {
+  const sellerId = req.user.userId;
+
+  const business = await Business.findOne({ owner: sellerId });
+  if (!business) {
+    return res.status(400).json({ message: "Seller has no business" });
+  }
+
+  const orders = await Order.find({ business: business._id })
+    .populate("customer", "name email")
+    .sort({ createdAt: -1 });
+
+  res.json(orders);
+};
+
+export const updateOrderStatus = async (
+  req: Request & { user?: any },
+  res: Response
+) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+
+  const sellerId = req.user.userId;
+
+  const business = await Business.findOne({ owner: sellerId });
+  if (!business) {
+    return res.status(400).json({ message: "Seller has no business" });
+  }
+
+  const order = await Order.findOne({
+    _id: orderId,
+    business: business._id,
+  });
+
+  if (!order) {
+    return res.status(404).json({ message: "Order not found" });
+  }
+
+  order.status = status;
+  await order.save();
+
+  res.json(order);
+};
+//get my orders
+export const getMyOrders = async (
+  req: Request & { user?: any },
+  res: Response
+) => {
+  const userId = req.user.userId;
+
+  const orders = await Order.find({ customer: userId })
+    .populate("business", "name username shareLink")
+    .sort({ createdAt: -1 });
+
+  res.json(orders);
+};
+//get orders by id
+export const getOrderById = async (
+  req: Request & { user?: any },
+  res: Response
+) => {
+  const { orderId } = req.params;
+  const userId = req.user.userId;
+
+  const order = await Order.findOne({
+    _id: orderId,
+    customer: userId,
+  }).populate("business", "name username shareLink");
+
+  if (!order) {
+    return res.status(404).json({ message: "Order not found" });
+  }
+
+  res.json(order);
+};
