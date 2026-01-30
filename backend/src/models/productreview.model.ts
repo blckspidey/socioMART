@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IReview extends Document {
+export interface IProductReview extends Document {
   customer: mongoose.Types.ObjectId;
   business: mongoose.Types.ObjectId;
   order: mongoose.Types.ObjectId;
@@ -8,7 +8,7 @@ export interface IReview extends Document {
   comment?: string;
 }
 
-const reviewSchema = new Schema<IReview>(
+const  productReviewSchema = new Schema<IProductReview>(
   {
     customer: {
       type: mongoose.Schema.Types.ObjectId,
@@ -45,4 +45,7 @@ const reviewSchema = new Schema<IReview>(
   { timestamps: true }
 );
 
-export const Review = mongoose.model<IReview>("Review", reviewSchema);
+export const ProductReview =
+  mongoose.models.ProductReview ||
+  mongoose.model<IProductReview>("ProductReview", productReviewSchema);
+

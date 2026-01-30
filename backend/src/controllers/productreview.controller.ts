@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Review } from "../models/productreview.model";
+import { ProductReview } from "../models/productreview.model";
 import { Order } from "../models/order.model";
 import { Business } from "../models/business.model";
 import { z } from "zod";
@@ -41,7 +41,7 @@ export const createReview = async (
       });
     }
 
-    const review = await Review.create({
+    const review = await ProductReview.create({
       customer: userId,
       business: order.business,
       order: order._id,
@@ -60,7 +60,7 @@ export const createReview = async (
 export const getBusinessReviews = async (req: Request, res: Response) => {
   const { businessId } = req.params;
 
-  const reviews = await Review.find({ business: businessId })
+  const reviews = await ProductReview.find({ business: businessId })
     .populate("customer", "name")
     .sort({ createdAt: -1 });
 

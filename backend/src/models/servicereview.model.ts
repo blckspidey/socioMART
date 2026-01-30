@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IReview extends Document {
+export interface IServiceReview extends Document {
   service: mongoose.Types.ObjectId;
   business: mongoose.Types.ObjectId;
   booking: mongoose.Types.ObjectId;
@@ -9,7 +9,7 @@ export interface IReview extends Document {
   comment?: string;
 }
 
-const reviewSchema = new Schema<IReview>(
+const serviceReviewSchema = new Schema<IServiceReview>(
   {
     service: {
       type: mongoose.Schema.Types.ObjectId,
@@ -52,4 +52,7 @@ const reviewSchema = new Schema<IReview>(
   { timestamps: true }
 );
 
-export const Review = mongoose.model<IReview>("Review", reviewSchema);
+export const ServiceReview =
+  mongoose.models.ServiceReview ||
+  mongoose.model<IServiceReview>("ServiceReview", serviceReviewSchema);
+

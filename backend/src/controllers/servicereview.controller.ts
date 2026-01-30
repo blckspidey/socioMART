@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Review } from "../models/servicereview.model";
+import {  ServiceReview} from "../models/servicereview.model";
 import { Booking } from "../models/booking.model";
 import { z } from "zod";
 
@@ -39,7 +39,7 @@ export const addReview = async (
         .json({ message: "Service not completed yet" });
     }
 
-    const review = await Review.create({
+    const review = await ServiceReview.create({
       service: booking.service,
       business: booking.business,
       booking: booking._id,
@@ -70,7 +70,7 @@ export const addReview = async (
 export const getServiceReviews = async (req: Request, res: Response) => {
   const { serviceId } = req.params;
 
-  const reviews = await Review.find({ service: serviceId })
+  const reviews = await ServiceReview.find({ service: serviceId })
     .populate("customer", "name")
     .sort({ createdAt: -1 });
 

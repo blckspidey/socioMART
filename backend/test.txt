@@ -1,0 +1,395 @@
+Excellent decision 👍
+This is **exactly** what a senior engineer does before starting frontend:
+**verify every backend flow end-to-end with Postman**.
+
+Below is a **complete backend verification checklist** with **exact request bodies**, **which user**, and **order of steps**.
+
+You can literally follow this top → bottom and be 100% confident.
+
+---
+
+# 🧪 SOCIOMART – COMPLETE BACKEND TEST FLOW (POSTMAN)
+
+We will test using **two users**:
+
+* 👤 **Seller User**
+* 👤 **Customer User**
+
+---
+
+## 🔐 1️⃣ AUTH – Register Users
+
+### A. Register SELLER
+
+**POST** `/api/auth/register`
+
+```json
+{
+  "name": "Ganesh Seller",
+  "email": "seller@sociomart.com",
+  "password": "Password123",
+  "role": "seller"
+}
+```
+
+✅ Save **SELLER_TOKEN**
+
+---
+
+### B. Register CUSTOMER
+
+**POST** `/api/auth/register`
+
+```json
+{
+  "name": "Rahul Customer",
+  "email": "customer@sociomart.com",
+  "password": "Password123",
+  "role": "customer"
+}
+```
+
+✅ Save **CUSTOMER_TOKEN**
+
+---
+
+## 🏪 2️⃣ BUSINESS – Seller Onboarding
+
+### Create Business (Seller only)
+
+**POST** `/api/business`
+
+Headers:
+
+```
+Authorization: Bearer SELLER_TOKEN
+```
+
+Body:
+
+```json
+{
+  "name": "FitLife Gym",
+  "username": "fitlife_gym",
+  "category": "fitness",
+  "city": "Pune",
+  "area": "Baner",
+  "pincode": "411045",
+  "bio": "Premium fitness training center"
+}
+```
+
+✅ Save **BUSINESS_ID**
+
+---
+
+### Public: Get Businesses
+
+**GET** `/api/business?city=pune`
+
+✅ Should return FitLife Gym with `shareLink`
+
+---
+
+## 📦 3️⃣ PRODUCT FLOW
+
+### A. Create Category (Seller)
+
+**POST** `/api/categories`
+
+Headers:
+
+```
+Authorization: Bearer SELLER_TOKEN
+```
+
+```json
+{
+  "name": "Supplements"
+}
+```
+
+✅ Save **CATEGORY_ID**
+
+---
+
+### B. Add Product (Seller)
+
+**POST** `/api/products`
+
+Headers:
+
+```
+Authorization: Bearer SELLER_TOKEN
+```
+
+```json
+{
+  "name": "Whey Protein",
+  "description": "High quality protein",
+  "price": 1499,
+  "images": [
+    "https://img.com/whey1.jpg",
+    "https://img.com/whey2.jpg"
+  ],
+  "category": "CATEGORY_ID",
+  "stock": 20
+}
+```
+
+✅ Save **PRODUCT_ID**
+
+---
+
+### C. Public: Get Products
+
+**GET** `/api/products/business/BUSINESS_ID`
+
+---
+
+## 🛒 4️⃣ ORDER FLOW (Products)
+
+### Customer places order
+
+**POST** `/api/orders`
+
+Headers:
+
+```
+Authorization: Bearer CUSTOMER_TOKEN
+```
+
+```json
+{
+  "businessId": "BUSINESS_ID",
+  "items": [
+    {
+      "productId": "PRODUCT_ID",
+      "quantity": 2
+    }
+  ],
+  "deliveryAddress": {
+    "house": "Flat 302",
+    "landmark": "Near Metro",
+    "pincode": "411045",
+    "district": "Pune",
+    "state": "Maharashtra"
+  },
+  "paymentMethod": "cod"
+}
+```
+
+✅ Save **ORDER_ID**
+
+---
+
+### Seller: View Orders
+
+**GET** `/api/orders/seller`
+
+Headers:
+
+```
+Authorization: Bearer SELLER_TOKEN
+```
+
+---
+
+### Seller: Update Order Status
+
+**PUT** `/api/orders/ORDER_ID/status`
+
+Headers:
+
+```
+Authorization: Bearer SELLER_TOKEN
+```
+
+```json
+{
+  "status": "shipped"
+}
+```
+
+---
+
+### Customer: Track Orders
+
+**GET** `/api/orders/my`
+
+Headers:
+
+```
+Authorization: Bearer CUSTOMER_TOKEN
+```
+
+---
+
+## 🛠️ 5️⃣ SERVICE FLOW
+
+### A. Add Service (Seller)
+
+**POST** `/api/services`
+
+Headers:
+
+```
+Authorization: Bearer SELLER_TOKEN
+```
+
+```json
+{
+  "name": "Personal Training",
+  "description": "1-on-1 fitness training",
+  "price": 999,
+  "duration": 60,
+  "images": [
+    "https://img.com/training1.jpg"
+  ]
+}
+```
+
+✅ Save **SERVICE_ID**
+
+---
+
+### B. Public: Get Services
+
+**GET** `/api/services/BUSINESS_ID`
+
+---
+
+## 📅 6️⃣ TIME SLOT FLOW
+
+### Get available slots
+
+**GET**
+
+```
+/api/bookings/slots?serviceId=SERVICE_ID&date=2026-02-01
+```
+
+✅ Should return array of slots
+
+---
+
+## 📆 7️⃣ BOOKING FLOW
+
+### Customer books service
+
+**POST** `/api/bookings`
+
+Headers:
+
+```
+Authorization: Bearer CUSTOMER_TOKEN
+```
+
+```json
+{
+  "serviceId": "SERVICE_ID",
+  "date": "2026-02-01",
+  "timeSlot": "10:00 - 11:00"
+}
+```
+
+✅ Save **BOOKING_ID**
+
+---
+
+### Seller: View bookings
+
+**GET** `/api/bookings/seller`
+
+Headers:
+
+```
+Authorization: Bearer SELLER_TOKEN
+```
+
+---
+
+### Seller: Complete booking
+
+**PUT** `/api/bookings/BOOKING_ID/status`
+
+Headers:
+
+```
+Authorization: Bearer SELLER_TOKEN
+```
+
+```json
+{
+  "status": "completed"
+}
+```
+
+---
+
+## ⭐ 8️⃣ SERVICE REVIEW FLOW
+
+### Customer adds review (after completed booking)
+
+**POST** `/api/reviews`
+
+Headers:
+
+```
+Authorization: Bearer CUSTOMER_TOKEN
+```
+
+```json
+{
+  "bookingId": "BOOKING_ID",
+  "rating": 5,
+  "comment": "Excellent training session!"
+}
+```
+
+---
+
+### Public: Get service reviews
+
+**GET**
+
+```
+/api/reviews/service/SERVICE_ID
+```
+
+---
+
+## ✅ FINAL VERIFICATION CHECKLIST
+
+If all of these work, then:
+
+✔ Auth works
+✔ Role system works
+✔ Seller onboarding works
+✔ Products & services work
+✔ Orders & bookings work
+✔ Time slots work
+✔ Reviews are fraud-safe
+
+👉 **Your backend is production-ready.**
+
+---
+
+## 🚀 After this
+
+Once you confirm all flows pass:
+
+Say:
+
+> **“Backend verified. Proceed to frontend architecture.”**
+
+And we’ll start building the React app **the right way** 💻🔥
+d,
+seller token 
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTdjNzUxNDQzMzBjZjBjY2NlNTQ4YmIiLCJyb2xlIjoic2VsbGVyIiwiaWF0IjoxNzY5NzY0MjczLCJleHAiOjE3NzAzNjkwNzN9.tVJE6xOGdXheZDGhC0uX_49XA5MKd87l0tXwmjGjJMw
+
+
+customer token 
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTdjNzYxMzQzMzBjZjBjY2NlNTQ4YmYiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3Njk3NjQzNzEsImV4cCI6MTc3MDM2OTE3MX0.N7GBYYn2cWAAAzMOCdzumsDhD-r9Wy3tL08izjo2U5k
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTdjNzYxMzQzMzBjZjBjY2NlNTQ4YmYiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3Njk3NjQ1MTcsImV4cCI6MTc3MDM2OTMxN30.Ont0LvgiQBSfNKluJfrVDasH2gDkZS1nyEL5KEpDn4E
