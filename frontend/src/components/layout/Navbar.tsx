@@ -58,12 +58,12 @@ export default function Navbar() {
                 </Link>
 
                 <Link
-                  to="/register"
-                  className="ml-2 px-4 py-2 rounded-full bg-primary text-white
-                             text-sm font-medium hover:bg-rose-600 transition"
-                >
-                  Get Started
-                </Link>
+  to="/get-started"
+  className="ml-2 px-4 py-2 rounded-full bg-primary text-white text-sm font-medium hover:bg-rose-600 transition"
+>
+  Get Started
+</Link>
+                
               </>
             ) : (
               <>

@@ -86,7 +86,7 @@ export default function HeroSection() {
             </Link>
 
             <Link
-              to="/register"
+              to="/get-started"
               className="px-6 py-3 rounded-full border border-gray-300 text-gray-800 font-medium hover:bg-gray-100 transition"
             >
               Start Selling

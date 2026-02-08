@@ -3,6 +3,9 @@ import Navbar from "./components/layout/Navbar";
 import Landing from "./pages/Landing";
 import Footer from "./components/layout/Footer";
 import Explore from "./pages/Explore";
+import GetStarted from "./pages/GetStarted";
+
+import Login from "./pages/Login";
 
 <Route path="/explore" element={<Explore />} />
 
@@ -17,6 +20,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/explore" element={<Explore />} />
+          <Route path="/get-started" element={<GetStarted />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </main>
 
