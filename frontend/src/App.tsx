@@ -2,6 +2,9 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
 import Landing from "./pages/Landing";
 import Footer from "./components/layout/Footer";
+import Explore from "./pages/Explore";
+
+<Route path="/explore" element={<Explore />} />
 
 
 function App() {
@@ -13,6 +16,7 @@ function App() {
         {/* routes */}
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/explore" element={<Explore />} />
         </Routes>
       </main>
 
