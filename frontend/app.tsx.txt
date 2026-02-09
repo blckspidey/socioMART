@@ -1,0 +1,47 @@
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/layout/Navbar";
+
+import Landing from "./pages/Landing";
+import Explore from "./pages/Explore";
+import Login from "./pages/Login";
+import GetStarted from "./pages/GetStarted";
+
+import ProtectedRoute from "./routes/ProtectedRoute";
+
+// shared pages
+import Cart from "./pages/Cart";
+import Orders from "./pages/Orders";
+import Profile from "./pages/Profile";
+
+// seller pages
+import CreateBusiness from "./pages/CreateBusiness";
+import SellerDashboard from "./pages/SellerDashboard";
+
+export default function App() {
+  return (
+    <>
+      <Navbar />
+
+      <Routes>
+        {/* PUBLIC */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/explore" element={<Explore />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/get-started" element={<GetStarted />} />
+
+        {/* AUTHENTICATED (customer + seller) */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+
+        {/* SELLER ONLY */}
+        <Route element={<ProtectedRoute role="seller" />}>
+          <Route path="/seller/dashboard" element={<SellerDashboard />} />
+          <Route path="/seller/create-business" element={<CreateBusiness />} />
+        </Route>
+      </Routes>
+    </>
+  );
+}

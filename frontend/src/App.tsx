@@ -4,8 +4,13 @@ import Landing from "./pages/Landing";
 import Footer from "./components/layout/Footer";
 import Explore from "./pages/Explore";
 import GetStarted from "./pages/GetStarted";
-
 import Login from "./pages/Login";
+import Home from "./pages/Home";
+
+
+
+
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 <Route path="/explore" element={<Explore />} />
 
@@ -22,6 +27,10 @@ function App() {
           <Route path="/explore" element={<Explore />} />
           <Route path="/get-started" element={<GetStarted />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/home" element={<Home />} />
+          
+
+
         </Routes>
       </main>
 
